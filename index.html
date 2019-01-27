@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Simpsons Character Search</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
+
+        <style>
+            body{
+                background-color: rgb(255,217,15);
+
+
+            }
+            #header{
+                font-size: 50px;
+                font-weight: bold;
+                text-align:center;
+                font-family: 'Gloria Hallelujah', cursive;
+                padding-top:10px;
+            }
+            .characters{
+                color: #0099CC; 
+                background: transparent; 
+                border: 2px solid #0099CC;
+                border-radius: 6px; 
+                cursor: pointer;
+                padding: 10px 10px 10px 10px;
+                font-size:20px;
+
+            }
+            #character-form{
+                color: #0099CC; 
+                font-family: 'Gloria Hallelujah', cursive;
+                font-size:30px;
+
+
+            }
+            #add-character{
+                color: #0099CC; 
+                background: transparent; 
+                border: 2px solid #0099CC;
+                border-radius: 6px; 
+                cursor: pointer;
+                padding: 10px 10px 10px 10px;
+                font-size:20px;
+
+            }
+            #ratings{
+                color: #0099CC; 
+                font-family: 'Gloria Hallelujah', cursive;
+                font-size:20px;
+
+            }
+
+            #character-input{
+                height: 30px;
+                width: 400px;
+            }
+        </style>
+    </head>
+    <body>
+            <div class="container">
+                <div class="row">
+                    <h1 id='header'>The Simpsons Character Search</h1>
+                </div>
+                <p class="row">
+                     <!-- Rendered Buttons will get Dumped Here  -->
+                    <div id="buttons-view"></div>
+                </div>
+                
+
+                    <div class="row">  
+                         
+                    <form id="character-form">
+                    <p>
+                      <label for="character-input">Add Simpsons Character </label>
+                      <input type="text" id="character-input"><br>
+                    </p>    
+                      <!-- Button triggers new movie to be added -->
+                      <input id="add-character" type="submit" value="Let's Add More character!" >
+                    </form>
+
+                    </div>
+                    
+                    <p>
+                    <div id="showImages"></div>
+                    </p>
+                    
+
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+
+
+        // Example queryURL for Giphy API
+            
+        var topics = ['Homer Simpson','Marge Simpson','Lisa Simpson','Kent Brockman','Apu Nahasapeemapetilon','Milhouse Van Houten','Seymour Skinner', 'Ralph Wiggum','Luigi Risotto','Ned Flanders','Moe Szyslak'];
+
+        function renderbutton(){
+            $("#buttons-view").empty();
+        //create buttons for each items in topics array
+        for (var i = 0; i<topics.length;i++){
+            var a = $("<button>");
+            a.addClass("characters");
+            a.attr("data-character", topics[i]);
+            a.text(topics[i]);
+            $("#buttons-view").append(a);
+            }
+        }
+        renderbutton();  
+        //render buttons for each input
+        $(':input[type="submit"]').prop('disabled', true);
+        $('input[type="text"]').keyup(function() {
+        if($(this).val() != '') {
+           $(':input[type="submit"]').prop('disabled', false);
+           $("#add-character").on("click", function(event) {    
+               
+            var addChar =  $("#character-input").val().trim();
+            event.preventDefault();
+            topics.push(addChar);
+            renderbutton();
+
+            });
+        }
+     });
+
+
+        //get the image from giphy.com
+        $(document).on("click",".characters",function(){
+            var character= $(this).attr("data-character");
+            var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + character + "&api_key=fimCzLydBDd6xNvWmJoNaR9mdOZTI4RQ";
+            $("#showImages").empty();
+            
+         $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response) {
+           // confirm if data was obtained from queryURL
+            console.log(response);  
+            for (var i = 0; i<10;i++){
+         
+            
+            var charImage = $("<img>");
+            charImage.attr("src",response.data[i].images.downsized_still.url);
+            charImage.attr("id","image-state");
+            charImage.attr("data-state","still");   
+            charImage.attr("data-still",response.data[i].images.downsized_still.url);
+            charImage.attr("data-animate",response.data[i].images.downsized.url);
+            $("#showImages").append(charImage);
+
+
+            var ratings=$("<p>");
+            ratings.attr("id","ratings");
+            ratings.text(("rating: "+response.data[i].rating).toUpperCase());
+            $("#showImages").append(ratings);
+            }
+           
+            
+            $(document).on('click',"#image-state",function(){
+                 var state = $(this).attr("data-state")
+                 if (state =="still"){
+                $(this).attr("src", $(this).attr("data-animate"));
+                $(this).attr("data-state","animate");
+                }
+                else if (state=="animate"){
+                    $(this).attr("src", $(this).attr("data-still"));
+                    $(this).attr("data-state","still");
+                }
+                });     
+         })
+        });
+          
+          
+          
+   
+          </script>
+    </body>
+</html>
