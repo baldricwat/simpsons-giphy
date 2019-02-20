@@ -139,7 +139,7 @@
         //get the image from giphy.com
         $(document).on("click",".characters",function(){
             var character= $(this).attr("data-character");
-            var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + character + "&api_key=fimCzLydBDd6xNvWmJoNaR9mdOZTI4RQ";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + character + "&api_key=fimCzLydBDd6xNvWmJoNaR9mdOZTI4RQ";
             $("#showImages").empty();
             
          $.ajax({
